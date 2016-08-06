@@ -16,7 +16,7 @@ function main(params) {
 			operation = 'set';
 		}
 		else if (body.indexOf('add') >= 0) {
-			operation = 'add';	
+			operation = 'add';
 		}
 		else if (body.indexOf('subtract') >= 0) {
 			operation = 'subtract';
@@ -40,24 +40,24 @@ function main(params) {
 			amount = Number(amountMatches[0]);
 		}
 		//
-		loadOrCreateBudget(db, params.message.from, function(err, budget) {
+		loadOrCreateBudget(db, params.message.from, function (err, budget) {
 			if (err) {
-        		return whisk.done({ "message": "Oops! Something went wrong. Please try again later. Sorry!" });
-        	}
+				return whisk.done({ "message": "Oops! Something went wrong. Please try again later. Sorry!" });
+			}
 			if (operation == 'set') {
-    			budget.balance = amount;
-    		}
-    		else if (operation == 'add') {
-    			budget.balance += amount;
-    		}
-    		else if (operation == 'subtract') {
-    			budget.balance -= amount;
-    		}
-    		saveBudget(db, budget, function(err, budget) {
-    			if (err) {
-        			return whisk.done({ "message": "Oops! Something went wrong. Please try again later. Sorry!" });
-        		}
-    			var message = {
+				budget.balance = amount;
+			}
+			else if (operation == 'add') {
+				budget.balance += amount;
+			}
+			else if (operation == 'subtract') {
+				budget.balance -= amount;
+			}
+			saveBudget(db, budget, function (err, budget) {
+				if (err) {
+					return whisk.done({ "message": "Oops! Something went wrong. Please try again later. Sorry!" });
+				}
+				var message = {
 					from: params.message.from,
 					body: params.message.body,
 					date: new Date().getTime(),
@@ -65,45 +65,40 @@ function main(params) {
 					amount: amount
 				};
 				saveMessage(db, message, function (err, result) {
-        			if (err) {
-            			return whisk.done({ "message": "Oops! Something went wrong. Please try again later. Sorry!" });
-            		}
-            		return whisk.done({ "message": "Your balance is $" + (Math.round(budget.balance*100)/100) });
-            	});
-    		});
+					if (err) {
+						return whisk.done({ "message": "Oops! Something went wrong. Please try again later. Sorry!" });
+					}
+					return whisk.done({ "message": "Your balance is $" + (Math.round(budget.balance * 100) / 100) });
+				});
+			});
         });
     };
     return whisk.async();
 }
 
 function loadOrCreateBudget(cloudant, id, callback) {
-	console.log("Loading or creating budget for " + id);
 	var budgetsDb = cloudant.use('jess_budgets');
-	budgetsDb.get(id, {include_docs: true}, function (err, result) {
+	budgetsDb.get(id, { include_docs: true }, function (err, result) {
 		if (err && err.statusCode != 404) {
-            console.log("Error loading budget for " + id + ": " + err);
             callback(err, result);
         }
         else if (result) {
-        	console.log("Budget exists for " + id + ": " + JSON.stringify(result));
-        	callback(err, result);
+			callback(err, result);
         }
         else {
-        	console.log("Budget does not exist for " + id);
-        	budget = {
-        		_id: id,
-        		balance: 0,
-        		create_date: new Date().getTime()
-        	};
-        	saveBudget(cloudant, budget, callback);
+			budget = {
+				_id: id,
+				balance: 0,
+				create_date: new Date().getTime()
+			};
+			saveBudget(cloudant, budget, callback);
         }
     });
 }
 
 function saveBudget(cloudant, budget, callback) {
-	console.log("Saving budget " + JSON.stringify(budget));
 	var budgetsDb = cloudant.use('jess_budgets');
-	budgetsDb.insert(budget, function(err, result) {
+	budgetsDb.insert(budget, function (err, result) {
         if (err) {
 			callback(err, result);
         }
@@ -117,7 +112,7 @@ function saveBudget(cloudant, budget, callback) {
 
 function saveMessage(cloudant, message, callback) {
 	var messagesDb = cloudant.use('jess_messages');
-	messagesDb.insert(message, function(err, result) {
+	messagesDb.insert(message, function (err, result) {
         if (err) {
 			callback(err, result);
         }
