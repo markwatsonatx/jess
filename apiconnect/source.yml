@@ -1,0 +1,157 @@
+paths:
+  /sms:
+    parameters:
+      - name: From
+        type: string
+        required: true
+        in: query
+      - name: Body
+        type: string
+        required: true
+        in: query
+    get:
+      responses:
+        '200':
+          description: 200 OK
+definitions:
+  OpenWhiskResponseBody:
+    properties:
+      response:
+        $ref: '#/definitions/OpenWhiskResponse'
+    additionalProperties: false
+    required:
+      - response
+  OpenWhiskResponse:
+    properties:
+      result:
+        $ref: '#/definitions/OpenWhiskResponseResult'
+    additionalProperties: false
+    required:
+      - result
+  OpenWhiskResponseResult:
+    properties:
+      message:
+        type: string
+    additionalProperties: false
+    required:
+      - message
+  OpenWhiskRequestBody:
+    properties:
+      message:
+        $ref: '#/definitions/OpenWhiskMessage'
+    additionalProperties: false
+    required:
+      - message
+  OpenWhiskMessage:
+    properties:
+      body:
+        type: string
+      from:
+        type: string
+    additionalProperties: false
+    required:
+      - body
+      - from
+  TwilioResponseBody:
+    properties:
+      Response:
+        $ref: '#/definitions/TwilioResponse'
+    additionalProperties: true
+    required:
+      - Response
+  TwilioResponse:
+    properties:
+      Message:
+        type: string
+    additionalProperties: true
+    required:
+      - Message
+swagger: '2.0'
+info:
+  x-ibm-name: jess
+  version: 0.0.1.29
+  title: Jess
+schemes:
+  - https
+host: $(catalog.host)
+basePath: /api
+securityDefinitions:
+  clientIdHeader:
+    type: apiKey
+    in: query
+    name: client_id
+  clientSecretHeader:
+    in: query
+    name: client_secret
+    type: apiKey
+security:
+  - clientIdHeader: []
+    clientSecretHeader: []
+x-ibm-configuration:
+  testable: true
+  enforced: true
+  cors:
+    enabled: true
+  catalogs:
+    apic-dev:
+      properties:
+        runtime-url: $(TARGET_URL)
+    sb:
+      properties:
+        runtime-url: 'http://localhost:4001'
+  assembly:
+    execute:
+      - map:
+          title: Convert to OpenWhisk JSON message
+          inputs:
+            Body:
+              schema:
+                type: string
+              variable: request.parameters.Body
+            From:
+              schema:
+                type: string
+              variable: request.parameters.From
+          outputs:
+            '':
+              schema:
+                $ref: '#/definitions/OpenWhiskRequestBody'
+              variable: message.body
+              content: application/json
+          actions:
+            - set: .message.body
+              from: Body
+            - set: .message.from
+              from: From
+      - invoke:
+          target-url: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/XXXXXXXXXX/actions/Jess?blocking=true'
+          title: Call OpenWhisk
+          username: XXXXXXXXXX
+          password: XXXXXXXXXX
+          verb: POST
+      - map:
+          title: Convert to Twilio Response
+          inputs:
+            '':
+              schema:
+                $ref: '#/definitions/OpenWhiskResponseBody'
+              variable: message.body
+              content: application/json
+          outputs:
+            '':
+              schema:
+                $ref: '#/definitions/TwilioResponseBody'
+              variable: message.body
+              content: application/json
+          actions:
+            - set: .Response.Message
+              from: .response.result.message
+      - json-to-xml:
+          title: json-to-xml
+          root-element-name: Response
+          always-output-root-element: false
+  gateway: datapower-gateway
+consumes:
+  - application/x-www-form-urlencoded
+produces:
+  - application/json
