@@ -11,5 +11,4 @@ includes one (and only one) dollar amount Jess will handle the rest.
 
 [Click here](http://markwatsonatx.github.io/tutorial/openwhisk/serverless/2016/08/04/serverless-guiless-openwhisk.html) for more details, or try it out yourself at 949-TEL-JESS.
 
-Note: Jess is experimental and using experimental services from Bluemix. It was developed for fun, and I wouldn't be surprised if may encounter the occasional hiccup. If you do please let me know! 
-
+Note: Jess is experimental and using experimental services from Bluemix. It was developed for fun, and I wouldn't be surprised if you encounter the occasional hiccup. If you do please let me know! 
