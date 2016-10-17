@@ -1,4 +1,4 @@
-Jess is a Serveless and GUI-less app developed on top of [IBM API Connect](https://developer.ibm.com/apiconnect/) and [OpenWhisk](https://developer.ibm.com/openwhisk/).
+Jess is a Serverless and GUI-less app developed on top of [IBM API Connect](https://developer.ibm.com/apiconnect/) and [OpenWhisk](https://developer.ibm.com/openwhisk/).
 
 It's a super simple budget tracking app that uses text messages and [Twilio](https://www.twilio.com/). You send Jess
 text messages detailing your budget and any additions or subtractions to that budget. Jess responds with your current
