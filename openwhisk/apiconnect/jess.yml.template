@@ -69,8 +69,8 @@ definitions:
 swagger: '2.0'
 info:
   x-ibm-name: jess
-  version: 0.0.1.29
-  title: Jess
+  version: 1.0.0
+  title: Jess API
 schemes:
   - https
 host: $(catalog.host)
@@ -124,10 +124,10 @@ x-ibm-configuration:
             - set: .message.from
               from: From
       - invoke:
-          target-url: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/XXXXXXXXXX/actions/Jess?blocking=true'
+          target-url: 'https://openwhisk.ng.bluemix.net/api/v1/namespaces/OPENWHISK_NAMESPACE/actions/Jess?blocking=true'
           title: Call OpenWhisk
-          username: XXXXXXXXXX
-          password: XXXXXXXXXX
+          username: OPENWHISK_USERNAME
+          password: OPENWHISK_PASSWORD
           verb: POST
       - map:
           title: Convert to Twilio Response
