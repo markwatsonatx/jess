@@ -9,9 +9,14 @@ absPath() {
     fi
 }
 ./wsk_set_env_prod.sh
-action=$1
-func_name=$2
-func_file_name=$3
+func_name=$1
+func_file_name=$2
+func=$(wsk action get $func_name 2> /dev/null)
+action='create'
+if [ -n "$func" ]
+    then
+        action='update'
+fi
 wsk_cmd=$(echo 'wsk action '$action' --kind nodejs:6')
 mkdir -p ./release/prod
 func_rel_file_name=$(echo $func_file_name | sed 's/.*\///')
@@ -31,4 +36,4 @@ while read -r line; do
 done <<< "$(grep -E '\$DefaultParam\:[ ]*.*' $func_tmp_file_name)"
 wsk_cmd=$(echo $wsk_cmd $func_name $func_tmp_file_name)
 echo $wsk_cmd
-eval $wsk_cmd
+#eval $wsk_cmd

@@ -13,7 +13,7 @@ function main(params) {
             url: params.cloudantUrl
         });
         if (!params.message.body || !params.message.from) {
-            return {"message": "Invalid message"};
+            return resolve({"message": "Invalid message"});
         }
         else {
             let operation;

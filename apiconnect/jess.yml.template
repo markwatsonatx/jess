@@ -1,5 +1,5 @@
 paths:
-  /sms:
+  /jess/sms:
     parameters:
       - name: From
         type: string
