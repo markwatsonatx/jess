@@ -4,7 +4,11 @@
 // $DefaultParam:cloudantUrl
 
 function main(params) {
-	return new Promise((resolve, reject) => {
+    const ADD = 'add';
+    const SUBTRACT = 'subtract';
+    const GET = 'get';
+    const SET = 'set';
+    return new Promise((resolve, reject) => {
         let cloudant = require('cloudant');
         let db = cloudant({
             username: params.cloudantUsername,
@@ -18,23 +22,23 @@ function main(params) {
         else {
             let operation;
             let body = params.message.body.toLowerCase();
-            if (body.indexOf('set') >= 0) {
-                operation = 'set';
+            if (body.indexOf(SET) >= 0) {
+                operation = SET;
             }
-            else if (body.indexOf('add') >= 0) {
-                operation = 'add';
+            else if (body.indexOf(ADD) >= 0) {
+                operation = ADD;
             }
-            else if (body.indexOf('subtract') >= 0) {
-                operation = 'subtract';
+            else if (body.indexOf(SUBTRACT) >= 0) {
+                operation = SUBTRACT;
             }
-            else if (body.indexOf('get') >= 0) {
-                operation = 'get';
+            else if (body.indexOf(GET) >= 0) {
+                operation = GET;
             }
             if (!operation) {
                 return resolve({"message": "Invalid operation. Send 'set', 'get', 'add', or 'subtract'."});
             }
             let amount;
-            if (operation != 'get') {
+            if (operation != GET) {
                 let amountRegex = /\d*\.?\d+/g;
                 let amountMatches = body.match(amountRegex);
                 if (!amountMatches || amountMatches.length == 0) {
@@ -51,13 +55,13 @@ function main(params) {
                 if (err) {
 					return resolve({"message": "Oops! Something went wrong. Please try again later. Sorry!"});
                 }
-                if (operation == 'set') {
+                if (operation == SET) {
                     budget.balance = amount;
                 }
-                else if (operation == 'add') {
+                else if (operation == ADD) {
                     budget.balance += amount;
                 }
-                else if (operation == 'subtract') {
+                else if (operation == SUBTRACT) {
                     budget.balance -= amount;
                 }
                 saveBudget(db, budget, function (err, budget) {

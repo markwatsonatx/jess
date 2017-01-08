@@ -36,4 +36,4 @@ while read -r line; do
 done <<< "$(grep -E '\$DefaultParam\:[ ]*.*' $func_tmp_file_name)"
 wsk_cmd=$(echo $wsk_cmd $func_name $func_tmp_file_name)
 echo $wsk_cmd
-#eval $wsk_cmd
+eval $wsk_cmd
