@@ -1,0 +1,1 @@
+ibmcloud fn property set --apihost openwhisk.ng.bluemix.net --auth xxxxxxxxxx:xxxxxxxxxx

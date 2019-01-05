@@ -1,0 +1,4 @@
+cloudantUsername="xxxxxxxxxxxx-bluemix"
+cloudantPassword="xxxxxxxxxxxxxxxxxxxx"
+cloudantAccount="xxxxxxxxxxxx-bluemix.cloudant.com"
+cloudantUrl="https://xxxxxxxxxxxx-bluemix:xxxxxxxxxxxxxxxxxxxx@xxxxxxxxxxxx-bluemix.cloudant.com"
