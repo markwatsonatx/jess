@@ -2,6 +2,7 @@
 // $DefaultParam:cloudantPassword
 // $DefaultParam:cloudantAccount
 // $DefaultParam:cloudantUrl
+// $DefaultParam:twilioServiceSid
 
 function main(params) {
     const ADD = 'add';
@@ -16,6 +17,9 @@ function main(params) {
             account: params.cloudantAccount,
             url: params.cloudantUrl
         });
+        if (!params.MessagingServiceSid || params.MessagingServiceSid !== params.twilioServiceSid) {
+            return resolve(getResponse('Not Authorized'));
+        }
         if (!params.Body || !params.From) {
             return resolve(getResponse('Inavlid Message'));
         }
